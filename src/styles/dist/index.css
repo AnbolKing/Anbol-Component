@@ -723,3 +723,96 @@ main {
 .icon-dark {
   color: #343a40;
 }
+
+.anbol-menu {
+  display: flex;
+  flex-wrap: wrap;
+  padding-left: 0;
+  margin-bottom: 30px;
+  list-style: none;
+  border-bottom: 1px solid #dee2e6;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+.anbol-menu > .menu-item {
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: color 0.15s ease-in;
+}
+.anbol-menu > .menu-item:hover, .anbol-menu > .menu-item:focus {
+  text-decoration: none;
+}
+.anbol-menu > .menu-item.is-disabled {
+  color: #6c757d;
+  pointer-events: none;
+  cursor: default;
+}
+.anbol-menu > .menu-item.is-active, .anbol-menu > .menu-item:hover {
+  color: #0d6efd;
+  border-bottom: 2px solid #0d6efd;
+}
+.anbol-menu .submenu-item {
+  position: relative;
+}
+.anbol-menu .submenu-item .submenu-title {
+  display: flex;
+  align-items: center;
+}
+.anbol-menu .submenu-item .arrow-icon {
+  transition: transform 0.25s ease-in-out;
+  margin-left: 5px;
+}
+.anbol-menu .submenu-item:hover .arrow-icon {
+  transform: rotate(180deg);
+}
+.anbol-menu .is-vertical .arrow-icon {
+  transform: rotate(0deg) !important;
+}
+.anbol-menu .is-vertical.is-opened .arrow-icon {
+  transform: rotate(180deg) !important;
+}
+.anbol-menu .anbol-submenu {
+  display: none;
+  list-style: none;
+  padding-left: 0px;
+  white-space: nowrap;
+  transition: color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+}
+.anbol-menu .anbol-submenu .menu-item {
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  transition: color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+  color: #212529;
+}
+.anbol-menu .anbol-submenu .menu-item.is-active, .anbol-menu .anbol-submenu .menu-item:hover {
+  color: #0d6efd !important;
+}
+.anbol-menu .anbol-submenu.menu-open {
+  display: block;
+}
+
+.menu-horizontal > .menu-item {
+  border-bottom: 2px solid transparent;
+}
+.menu-horizontal .anbol-submenu {
+  position: absolute;
+  background: #fff;
+  z-index: 100;
+  top: calc(100% + 8px);
+  left: 0;
+  border: 1px solid #dee2e6;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.12), 0 0 6px 0 rgba(0, 0, 0, 0.04);
+}
+
+.menu-vertical {
+  flex-direction: column;
+  border-bottom: 0px;
+  margin: 10px 20px;
+  border-right: 1px solid #dee2e6;
+}
+.menu-vertical > .menu-item {
+  border-left: 2px solid transparent;
+}
+.menu-vertical > .menu-item.is-active, .menu-vertical > .menu-item:hover {
+  border-bottom: 0px;
+  border-left: 2px solid #0d6efd;
+}
