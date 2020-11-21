@@ -1,0 +1,55 @@
+.anbol-tabs-nav {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    padding-left: 0px;
+    margin-bottom: 0;
+    list-style: none;
+    border-bottom: 1px solid #dee2e6;
+    >.tab-item {
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+        transition: color 0.15s ease-in-out;
+        &:hover,
+        &:focus {
+            text-decoration: none;
+        }
+        &.is-disbaled {
+            pointer-events: none;
+            color: $menu-item-disabled-color;
+            cursor: default;
+        }
+        &:hover {
+            color: $menu-item-active-color;
+            // border-bottom: $menu-item-active-border-width solid $menu-item-active-color;
+        }
+        &:focus,
+        &.is-active {
+            color: $menu-item-active-color;
+            border-bottom: $menu-item-active-border-width solid $menu-item-active-color;
+        }
+    }
+}
+
+.nav-line {
+    >.tab-item {
+        border-bottom: $menu-item-active-border-width solid transparent;
+    }
+}
+
+.nav-card {
+    >.tab-item {
+        border: 1px solid transparent;
+        margin-bottom: -1px;
+        &.is-active {
+            border-top-left-radius: 0.25rem;
+            border-top-right-radius: 0.25rem;
+            background-color: #fff;
+            border-color: #dee2e6 #dee2e6 #fff;
+        }
+    }
+}
+
+.anbol-tabs-content {
+    margin-top: 1rem;
+}

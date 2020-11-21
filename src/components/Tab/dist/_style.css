@@ -1,0 +1,13 @@
+.anbol-tabs-nav {
+  display: flex;
+  flex-wrap: wrap;
+  padding-left: 0px;
+  margin-bottom: 0;
+  list-style: none;
+  border-bottom: 1px solid #dee2e6;
+}
+.anbol-tabs-nav > .tab-item {
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: color 0.15s ease-in-out;
+}
