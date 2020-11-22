@@ -3,6 +3,7 @@ import axios from 'axios';
 import Button from '../Button/button';
 import { ButtonType } from '../Button/button';
 import UploadList from './uploadList';
+import Dragger from './dragger';
 
 interface UploadProps {
   action : string;
@@ -13,6 +14,13 @@ interface UploadProps {
   onError ?: (err:any, file:File) => void;
   onChange ?: (file:File) => void;
   onRemove ?: (file:UploadFile) => void;
+  headers ?: {[key: string] : any};
+  name ?: string;
+  data ?: {[key: string] : any};
+  withCredentials ?: boolean;
+  accept ?: string;
+  mutiple ?: boolean;
+  drag ?: boolean;
 }
 export type UploadFilesStatus = 'ready' | 'uploading' | 'success' | 'error';
 export interface UploadFile {
@@ -36,6 +44,14 @@ const Upload:React.FC<UploadProps> = (props) => {
     onError,
     onChange,
     onRemove,
+    name,
+    withCredentials,
+    data,
+    headers,
+    accept,
+    mutiple,
+    children,
+    drag,
   } = props;
   const fileInput = useRef<HTMLInputElement>(null);
   const [fileList, setFileList] = useState<UploadFile[]>(defaultFileList || []);
@@ -66,6 +82,14 @@ const Upload:React.FC<UploadProps> = (props) => {
       fileInput.current.value = '';
     }
   }
+  const handleRemove = (file:UploadFile) => {
+    setFileList((prevList) => {
+      return prevList.filter(item => item.uid!==file.uid)
+    })
+    if(onRemove) {
+      onRemove(file)
+    }
+  }
   const uploadFiles = (file:FileList) => {
     let postFiles = Array.from(file);
     postFiles.forEach(file => {
@@ -94,13 +118,22 @@ const Upload:React.FC<UploadProps> = (props) => {
       percent : 0,
       raw : file,
     }
-    setFileList([_file,...fileList]);
+    setFileList((prevList) => {
+      return [_file, ...prevList];
+    });
     const formData = new FormData();
-    formData.append(file.name, file);
+    formData.append(name || 'file', file);
+    if(data) {
+      Object.keys(data).forEach(key => {
+        formData.append(key,data[key]);
+      })
+    }
     axios.post(action, formData, {
       headers: {
+        ...headers,
         'Content-Type' : 'multipart/form-data'
       },
+      withCredentials,
       onUploadProgress:(e) => { 
         let percentage = Math.round((e.loaded*100) / e.total) || 0;
         if(percentage < 100) {
@@ -133,20 +166,34 @@ const Upload:React.FC<UploadProps> = (props) => {
   console.log(fileList);
   return (
     <div className="anbol-upload-component">
-      <Button btnType={ButtonType.Primary} onClick={handleClick}>Upload File...</Button>
-      <input 
-        type="file"
-        className="anbol-file-input"
-        ref={fileInput}
-        style={{display:'none'}}
-        onChange={handleFileChange}
-      />
+      {/* <Button btnType={ButtonType.Primary} onClick={handleClick}>Upload File...</Button> */}
+      
+      <div className="anbol-upload-input" style={{display:'inline-block'}} onClick={handleClick}>
+          {drag ? 
+            <Dragger onFile={(files) => {uploadFiles(files)}}>
+              {children}
+            </Dragger>:
+            children
+          }
+        <input 
+          type="file"
+          className="anbol-file-input"
+          ref={fileInput}
+          style={{display:'none'}}
+          onChange={handleFileChange}
+          accept={accept}
+          multiple={mutiple}
+        />
+      </div>
       <UploadList
         fileList={fileList}
-        onRemove={() => {}}
+        onRemove={handleRemove}
       />
     </div>
   )
 }
 
+Upload.defaultProps = {
+  name : 'file',
+}
 export default Upload;

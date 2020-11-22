@@ -20,11 +20,10 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
 exports.__esModule = true;
 var react_1 = require("react");
 var axios_1 = require("axios");
-var button_1 = require("../Button/button");
-var button_2 = require("../Button/button");
 var uploadList_1 = require("./uploadList");
+var dragger_1 = require("./dragger");
 var Upload = function (props) {
-    var action = props.action, defaultFileList = props.defaultFileList, beforeUpload = props.beforeUpload, onProgress = props.onProgress, onSuccess = props.onSuccess, onError = props.onError, onChange = props.onChange, onRemove = props.onRemove;
+    var action = props.action, defaultFileList = props.defaultFileList, beforeUpload = props.beforeUpload, onProgress = props.onProgress, onSuccess = props.onSuccess, onError = props.onError, onChange = props.onChange, onRemove = props.onRemove, name = props.name, withCredentials = props.withCredentials, data = props.data, headers = props.headers, accept = props.accept, mutiple = props.mutiple, children = props.children, drag = props.drag;
     var fileInput = react_1.useRef(null);
     var _a = react_1.useState(defaultFileList || []), fileList = _a[0], setFileList = _a[1];
     var updateFileList = function (uploadFile, updateObj) {
@@ -52,6 +51,14 @@ var Upload = function (props) {
         uploadFiles(files);
         if (fileInput.current) {
             fileInput.current.value = '';
+        }
+    };
+    var handleRemove = function (file) {
+        setFileList(function (prevList) {
+            return prevList.filter(function (item) { return item.uid !== file.uid; });
+        });
+        if (onRemove) {
+            onRemove(file);
         }
     };
     var uploadFiles = function (file) {
@@ -82,13 +89,19 @@ var Upload = function (props) {
             percent: 0,
             raw: file
         };
-        setFileList(__spreadArrays([_file], fileList));
+        setFileList(function (prevList) {
+            return __spreadArrays([_file], prevList);
+        });
         var formData = new FormData();
-        formData.append(file.name, file);
+        formData.append(name || 'file', file);
+        if (data) {
+            Object.keys(data).forEach(function (key) {
+                formData.append(key, data[key]);
+            });
+        }
         axios_1["default"].post(action, formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            },
+            headers: __assign(__assign({}, headers), { 'Content-Type': 'multipart/form-data' }),
+            withCredentials: withCredentials,
             onUploadProgress: function (e) {
                 var percentage = Math.round((e.loaded * 100) / e.total) || 0;
                 if (percentage < 100) {
@@ -120,8 +133,14 @@ var Upload = function (props) {
     };
     console.log(fileList);
     return (react_1["default"].createElement("div", { className: "anbol-upload-component" },
-        react_1["default"].createElement(button_1["default"], { btnType: button_2.ButtonType.Primary, onClick: handleClick }, "Upload File..."),
-        react_1["default"].createElement("input", { type: "file", className: "anbol-file-input", ref: fileInput, style: { display: 'none' }, onChange: handleFileChange }),
-        react_1["default"].createElement(uploadList_1["default"], { fileList: fileList, onRemove: function () { } })));
+        react_1["default"].createElement("div", { className: "anbol-upload-input", style: { display: 'inline-block' }, onClick: handleClick },
+            drag ?
+                react_1["default"].createElement(dragger_1["default"], { onFile: function (files) { uploadFiles(files); } }, children) :
+                children,
+            react_1["default"].createElement("input", { type: "file", className: "anbol-file-input", ref: fileInput, style: { display: 'none' }, onChange: handleFileChange, accept: accept, multiple: mutiple })),
+        react_1["default"].createElement(uploadList_1["default"], { fileList: fileList, onRemove: handleRemove })));
+};
+Upload.defaultProps = {
+    name: 'file'
 };
 exports["default"] = Upload;
