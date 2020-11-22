@@ -1,9 +1,7 @@
-import React, { ChangeEvent, useRef, useState } from 'react';
+import React, {ChangeEvent, useRef, useState} from 'react';
 import axios from 'axios';
-// import Button from '../Button/button';
-// import { ButtonType } from '../Button/button';
-import UploadList from './uploadList';
 import Dragger from './dragger';
+
 
 interface UploadProps {
   action : string;
@@ -22,19 +20,21 @@ interface UploadProps {
   mutiple ?: boolean;
   drag ?: boolean;
 }
-export type UploadFilesStatus = 'ready' | 'uploading' | 'success' | 'error';
+
+export type UploadFileStatus = 'ready' | 'success' | 'error' | 'uploading';
+
 export interface UploadFile {
   uid : string;
   size : number;
   name : string;
-  status ?: UploadFilesStatus;
+  status ?: UploadFileStatus;
   percent ?: number;
   raw ?: File;
   response ?: any;
   error ?: any;
 }
 
-const Upload:React.FC<UploadProps> = (props) => {
+const MyUpload :React.FC<UploadProps> = (props) => {
   const {
     action,
     defaultFileList,
@@ -54,9 +54,9 @@ const Upload:React.FC<UploadProps> = (props) => {
     drag,
   } = props;
   const fileInput = useRef<HTMLInputElement>(null);
-  const [fileList, setFileList] = useState<UploadFile[]>(defaultFileList || []);
+  const [fileList, setFileList] = useState<UploadFile[]>(defaultFileList||[]);
   const updateFileList = (uploadFile:UploadFile, updateObj:Partial<UploadFile>) => {
-    setFileList(prevList => {
+    setFileList((prevList) => {
       return prevList.map(file => {
         if(file.uid === uploadFile.uid) {
           return {...file, ...updateObj}
@@ -72,29 +72,23 @@ const Upload:React.FC<UploadProps> = (props) => {
       fileInput.current.click();
     }
   }
-  const handleFileChange = (e:ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e:ChangeEvent<HTMLInputElement>) => {
+    // console.log(e);
     const files = e.target.files;
     if(!files) {
-      return;
+      return ;
     }
     uploadFiles(files);
     if(fileInput.current) {
       fileInput.current.value = '';
     }
   }
-  const handleRemove = (file:UploadFile) => {
-    setFileList((prevList) => {
-      return prevList.filter(item => item.uid!==file.uid)
-    })
-    if(onRemove) {
-      onRemove(file)
-    }
-  }
-  const uploadFiles = (file:FileList) => {
-    let postFiles = Array.from(file);
+  const uploadFiles = (files:FileList) => {
+    console.log(files);
+    let postFiles = Array.from(files);
     postFiles.forEach(file => {
       if(!beforeUpload) {
-        post(file)
+        post(file);
       }
       else {
         const result = beforeUpload(file);
@@ -103,41 +97,41 @@ const Upload:React.FC<UploadProps> = (props) => {
             post(processFile);
           })
         }
-        else if(result !== false) {
+        if(result !== false) {
           post(file);
         }
       }
     })
   }
   const post = (file:File) => {
-    let _file:UploadFile = {
+    let oneFile:UploadFile = {
       uid : Date.now() + 'upload-file',
       status : 'ready',
       name : file.name,
       size : file.size,
-      percent : 0,
       raw : file,
+      percent : 0,
     }
     setFileList((prevList) => {
-      return [_file, ...prevList];
+      return [oneFile, ...prevList];
     });
     const formData = new FormData();
     formData.append(name || 'file', file);
     if(data) {
       Object.keys(data).forEach(key => {
-        formData.append(key,data[key]);
+        formData.append(key, data[key]);
       })
     }
     axios.post(action, formData, {
       headers: {
         ...headers,
-        'Content-Type' : 'multipart/form-data'
+        'Content-Type' : 'multipart/form-data',
       },
       withCredentials,
-      onUploadProgress:(e) => { 
-        let percentage = Math.round((e.loaded*100) / e.total) || 0;
+      onDownloadProgress:(e) => {
+        let percentage = Math.round((e.loaded*100)/e.total);
         if(percentage < 100) {
-          updateFileList(_file, { percent:percentage, status:'uploading'})
+          updateFileList(oneFile,{percent:percentage, status:'uploading'})
           if(onProgress) {
             onProgress(percentage, file);
           }
@@ -145,7 +139,7 @@ const Upload:React.FC<UploadProps> = (props) => {
       }
     }).then(res => {
       console.log(res);
-      updateFileList(_file, {status:'success', response:res.data})
+      updateFileList(oneFile,{response:res.data, status:'success'})
       if(onSuccess) {
         onSuccess(res.data, file);
       }
@@ -154,46 +148,37 @@ const Upload:React.FC<UploadProps> = (props) => {
       }
     }).catch(err => {
       console.log(err);
-      updateFileList(_file, {status:'error', error:err})
+      updateFileList(oneFile,{error:err, status:'error'})
       if(onError) {
-        onError(err, file)
-      }
-      if(onChange) {
-        onChange(file);
+        onError(err, file);
       }
     })
+  } 
+  const handleDrag = (files:FileList) => {
+    uploadFiles(files);
   }
-  console.log(fileList);
   return (
     <div className="anbol-upload-component">
-      {/* <Button btnType={ButtonType.Primary} onClick={handleClick}>Upload File...</Button> */}
-      
       <div className="anbol-upload-input" style={{display:'inline-block'}} onClick={handleClick}>
-          {drag ? 
-            <Dragger onFile={(files) => {uploadFiles(files)}}>
+        {
+          drag ? 
+            <Dragger onFile={handleDrag}>
               {children}
-            </Dragger>:
-            children
-          }
+            </Dragger>
+            : {children}
+        }
         <input 
-          type="file"
-          className="anbol-file-input"
+          type='file'
+          className='anbol-file-input'
           ref={fileInput}
           style={{display:'none'}}
-          onChange={handleFileChange}
           accept={accept}
           multiple={mutiple}
+          onChange={handleChange}
         />
       </div>
-      <UploadList
-        fileList={fileList}
-        onRemove={handleRemove}
-      />
     </div>
   )
 }
 
-Upload.defaultProps = {
-  name : 'file',
-}
-export default Upload;
+export default MyUpload;

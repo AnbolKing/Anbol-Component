@@ -20,11 +20,8 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
 exports.__esModule = true;
 var react_1 = require("react");
 var axios_1 = require("axios");
-// import Button from '../Button/button';
-// import { ButtonType } from '../Button/button';
-var uploadList_1 = require("./uploadList");
 var dragger_1 = require("./dragger");
-var Upload = function (props) {
+var MyUpload = function (props) {
     var action = props.action, defaultFileList = props.defaultFileList, beforeUpload = props.beforeUpload, onProgress = props.onProgress, onSuccess = props.onSuccess, onError = props.onError, onChange = props.onChange, onRemove = props.onRemove, name = props.name, withCredentials = props.withCredentials, data = props.data, headers = props.headers, accept = props.accept, mutiple = props.mutiple, children = props.children, drag = props.drag;
     var fileInput = react_1.useRef(null);
     var _a = react_1.useState(defaultFileList || []), fileList = _a[0], setFileList = _a[1];
@@ -45,7 +42,8 @@ var Upload = function (props) {
             fileInput.current.click();
         }
     };
-    var handleFileChange = function (e) {
+    var handleChange = function (e) {
+        // console.log(e);
         var files = e.target.files;
         if (!files) {
             return;
@@ -55,16 +53,9 @@ var Upload = function (props) {
             fileInput.current.value = '';
         }
     };
-    var handleRemove = function (file) {
-        setFileList(function (prevList) {
-            return prevList.filter(function (item) { return item.uid !== file.uid; });
-        });
-        if (onRemove) {
-            onRemove(file);
-        }
-    };
-    var uploadFiles = function (file) {
-        var postFiles = Array.from(file);
+    var uploadFiles = function (files) {
+        console.log(files);
+        var postFiles = Array.from(files);
         postFiles.forEach(function (file) {
             if (!beforeUpload) {
                 post(file);
@@ -76,23 +67,23 @@ var Upload = function (props) {
                         post(processFile);
                     });
                 }
-                else if (result !== false) {
+                if (result !== false) {
                     post(file);
                 }
             }
         });
     };
     var post = function (file) {
-        var _file = {
+        var oneFile = {
             uid: Date.now() + 'upload-file',
             status: 'ready',
             name: file.name,
             size: file.size,
-            percent: 0,
-            raw: file
+            raw: file,
+            percent: 0
         };
         setFileList(function (prevList) {
-            return __spreadArrays([_file], prevList);
+            return __spreadArrays([oneFile], prevList);
         });
         var formData = new FormData();
         formData.append(name || 'file', file);
@@ -104,10 +95,10 @@ var Upload = function (props) {
         axios_1["default"].post(action, formData, {
             headers: __assign(__assign({}, headers), { 'Content-Type': 'multipart/form-data' }),
             withCredentials: withCredentials,
-            onUploadProgress: function (e) {
-                var percentage = Math.round((e.loaded * 100) / e.total) || 0;
+            onDownloadProgress: function (e) {
+                var percentage = Math.round((e.loaded * 100) / e.total);
                 if (percentage < 100) {
-                    updateFileList(_file, { percent: percentage, status: 'uploading' });
+                    updateFileList(oneFile, { percent: percentage, status: 'uploading' });
                     if (onProgress) {
                         onProgress(percentage, file);
                     }
@@ -115,7 +106,7 @@ var Upload = function (props) {
             }
         }).then(function (res) {
             console.log(res);
-            updateFileList(_file, { status: 'success', response: res.data });
+            updateFileList(oneFile, { response: res.data, status: 'success' });
             if (onSuccess) {
                 onSuccess(res.data, file);
             }
@@ -124,25 +115,20 @@ var Upload = function (props) {
             }
         })["catch"](function (err) {
             console.log(err);
-            updateFileList(_file, { status: 'error', error: err });
+            updateFileList(oneFile, { error: err, status: 'error' });
             if (onError) {
                 onError(err, file);
             }
-            if (onChange) {
-                onChange(file);
-            }
         });
     };
-    console.log(fileList);
+    var handleDrag = function (files) {
+        uploadFiles(files);
+    };
     return (react_1["default"].createElement("div", { className: "anbol-upload-component" },
         react_1["default"].createElement("div", { className: "anbol-upload-input", style: { display: 'inline-block' }, onClick: handleClick },
             drag ?
-                react_1["default"].createElement(dragger_1["default"], { onFile: function (files) { uploadFiles(files); } }, children) :
-                children,
-            react_1["default"].createElement("input", { type: "file", className: "anbol-file-input", ref: fileInput, style: { display: 'none' }, onChange: handleFileChange, accept: accept, multiple: mutiple })),
-        react_1["default"].createElement(uploadList_1["default"], { fileList: fileList, onRemove: handleRemove })));
+                react_1["default"].createElement(dragger_1["default"], { onFile: handleDrag }, children)
+                : { children: children },
+            react_1["default"].createElement("input", { type: 'file', className: 'anbol-file-input', ref: fileInput, style: { display: 'none' }, accept: accept, multiple: mutiple, onChange: handleChange }))));
 };
-Upload.defaultProps = {
-    name: 'file'
-};
-exports["default"] = Upload;
+exports["default"] = MyUpload;

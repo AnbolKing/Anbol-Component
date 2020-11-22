@@ -17,6 +17,7 @@ const Progress:React.FC<ProgressProps> = (props) => {
     styles,
     theme,
   } = props;
+  
   return (
     <div className="anbol-progress-bar" style={styles}>
       <div className="anbol-progress-bar-outer" style={{height:`${strokeHeight}px`}}>

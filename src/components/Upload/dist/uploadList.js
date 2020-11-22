@@ -2,7 +2,7 @@
 exports.__esModule = true;
 var react_1 = require("react");
 var icon_1 = require("../Icon/icon");
-var progress_1 = require("../Progress/progress");
+var myProgress_1 = require("../MyProgress/myProgress");
 var UploadList = function (props) {
     var fileList = props.fileList, onRemove = props.onRemove;
     return (react_1["default"].createElement("ul", { className: "anbol-upload-list" }, fileList.map(function (item) {
@@ -17,7 +17,7 @@ var UploadList = function (props) {
             react_1["default"].createElement("span", { className: "file-actions" },
                 react_1["default"].createElement(icon_1["default"], { icon: 'times', onClick: function () { onRemove(item); } })),
             item.status === 'uploading' &&
-                react_1["default"].createElement(progress_1["default"], { percent: item.percent || 0 })));
+                react_1["default"].createElement(myProgress_1["default"], { percent: item.percent || 0 })));
     })));
 };
 exports["default"] = UploadList;
