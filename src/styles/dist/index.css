@@ -408,7 +408,7 @@ main {
 .btn-primary:focus, .btn-primary.focus {
   color: #fff;
   background: #3385fd;
-  outline: #408cfd;
+  border-color: #408cfd;
 }
 .btn-primary:disabled, .btn-primary.disabled {
   color: #fff;
@@ -429,7 +429,7 @@ main {
 .btn-danger:focus, .btn-danger.focus {
   color: #fff;
   background: #e25663;
-  outline: #e4606d;
+  border-color: #e4606d;
 }
 .btn-danger:disabled, .btn-danger.disabled {
   color: #fff;
@@ -450,7 +450,7 @@ main {
 .btn-default:focus, .btn-default.focus {
   color: #0d6efd;
   background: #fff;
-  outline: #0d6efd;
+  border-color: #0d6efd;
 }
 .btn-default:disabled, .btn-default.disabled {
   color: #212529;
@@ -850,4 +850,163 @@ main {
 }
 .anbol-progress-bar .color-dark {
   background-color: #343a40;
+}
+
+.anbol-progress-bar {
+  width: 100%;
+  box-sizing: border-box;
+}
+.anbol-progress-bar .anbol-progress-bar-outer {
+  border-radius: 0.25rem;
+  background-color: #e9ecef;
+  overflow: hidden;
+  position: relative;
+}
+.anbol-progress-bar .anbol-progress-bar-inner {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  height: 100%;
+  border-radius: 0.25rem;
+  line-height: 1;
+  transition: width 0.6s ease;
+}
+.anbol-progress-bar .anbol-progress-bar-inner .inner-text {
+  color: #fff;
+  font-size: 0.75rem;
+  margin: 0 5px;
+}
+.anbol-progress-bar .color-primary {
+  background-color: #0d6efd;
+}
+.anbol-progress-bar .color-secondary {
+  background-color: #6c757d;
+}
+.anbol-progress-bar .color-success {
+  background-color: #52c41a;
+}
+.anbol-progress-bar .color-info {
+  background-color: #17a2b8;
+}
+.anbol-progress-bar .color-warning {
+  background-color: #fadb14;
+}
+.anbol-progress-bar .color-danger {
+  background-color: #dc3545;
+}
+.anbol-progress-bar .color-light {
+  background-color: #f8f9fa;
+}
+.anbol-progress-bar .color-dark {
+  background-color: #343a40;
+}
+
+.anbol-input-wrapper {
+  display: flex;
+  width: 100%;
+  margin-bottom: 30px;
+  position: relative;
+}
+.anbol-input-wrapper .icon-wrapper {
+  position: absolute;
+  height: 100%;
+  width: 35px;
+  justify-content: center;
+  color: #495057;
+  right: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+}
+.anbol-input-wrapper .icon-wrapper svg {
+  color: #6c757d;
+}
+
+.icon-wrapper + .anbol-input-inner {
+  padding-right: 35px;
+}
+
+.anbol-input-inner {
+  width: 100%;
+  padding: 0.375rem 0.75rem;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #495057;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.075);
+  transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+.anbol-input-inner:focus {
+  color: #495057;
+  background-color: #fff;
+  border-color: #8bbafe;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+.anbol-input-inner::placeholder {
+  color: #6c757d;
+  opacity: 1;
+}
+.anbol-input-inner:disabled, .anbol-input-inner[readonly] {
+  background-color: #e9ecef;
+  opacity: 1;
+}
+
+.anbol-input-group-prepend,
+.anbol-input-group-append {
+  display: flex;
+  align-items: center;
+  padding: 0.375rem 0.75rem;
+  margin-bottom: 0;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #495057;
+  text-align: center;
+  white-space: nowrap;
+  background-color: #e9ecef;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+}
+
+.anbol-input-group-append + .btn {
+  padding: 0;
+  border: 0;
+}
+
+.input-group > .anbol-input-group-prepend,
+.input-group.input-group-append > .anbol-input-inner {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.input-group > .anbol-input-group-append,
+.input-group.input-group-prepend > .anbol-input-inner {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.input-size-sm .anbol-input-inner {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  border-radius: 0.2rem;
+}
+
+.input-size-lg .anbol-input-inner {
+  padding: 0.5rem 1rem;
+  font-size: 1.25rem;
+  border-radius: 0.3rem;
+}
+
+.item-highlighted {
+  background-color: #0d6efd;
+  color: #fff;
 }
