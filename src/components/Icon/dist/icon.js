@@ -27,7 +27,6 @@ var classnames_1 = require("classnames");
 var react_fontawesome_1 = require("@fortawesome/react-fontawesome");
 var Icon = function (props) {
     var _a;
-    console.log(123);
     // icon-primary
     var className = props.className, theme = props.theme, restProps = __rest(props, ["className", "theme"]);
     var classes = classnames_1["default"]('anbol-icon', className, (_a = {},

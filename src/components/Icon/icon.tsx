@@ -9,7 +9,6 @@ export interface IconProps extends FontAwesomeIconProps {
 }
 
 const Icon: React.FC<IconProps> = (props) => {
-  console.log(123);
   // icon-primary
   const { className, theme, ...restProps } = props
   const classes = classNames('anbol-icon', className, {
